@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Rédaction - Version Simple</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            min-height: 100vh;            
+            background: linear-gradient(315deg, #3a4f5b 3%, #df165a 98%);
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1em;
+        }
+        
+        .progress-bar {
+            position: sticky;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 30px;
+            background: #e0e0e0;
+            border-top: 10px solid #fff;
+            border-bottom: 10px solid #fff;
+}
+
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            padding: 6px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            background: #fafafa;
+            transition: all 0.3s;
+        }
+
+        .section:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-progress {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-item:hover {
+            background: #f0f4ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .checkbox-item.checked {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #667eea;
+            margin-top: 2px;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .checkbox-item.checked label {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .reset-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .reset-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s;
+        }
+
+        .section.collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+
+        .section.collapsed .checkbox-group {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .reset-btn {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✍️ Checklist Rédaction/Production de Contenu</h1>
+        <p class="subtitle">Guide simple (optimisé humains & IA)</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress">0%</div>
+        </div>
+
+        <!-- PRÉPARATION -->
+        <div class="section" data-section="prep">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    🎯 Préparation
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/5</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="prep-1" onchange="updateProgress()">
+                    <label for="prep-1">Définir clairement l'objectif du contenu (informer, vendre, engager)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="prep-2" onchange="updateProgress()">
+                    <label for="prep-2">Identifier l'utilisateur cible (âge, problèmes, besoins)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="prep-3" onchange="updateProgress()">
+                    <label for="prep-3">Viser un mot-clé principal (sujet en 2-3 mots)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="prep-4" onchange="updateProgress()">
+                    <label for="prep-4">Vérifier sur Google, Youtube et les IAs ce qui existe, lire, comprendre l'intention et identifier des améliorations</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="prep-5" onchange="updateProgress()">
+                    <label for="prep-5">Créer un plan avec les grandes parties et répondre aux manquement identifiés dans les contenus découverts au point précédent</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- TITRE ET INTRO -->
+        <div class="section" data-section="titre">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    📌 Titre et Introduction
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/6</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="titre-1" onchange="updateProgress()">
+                    <label for="titre-1">Créer un titre accrocheur avec le mot-clé principal</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="titre-2" onchange="updateProgress()">
+                    <label for="titre-2">Limiter le titre à 60 caractères maximum</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="titre-3" onchange="updateProgress()">
+                    <label for="titre-3">Capter l'attention dès la première phrase</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="titre-4" onchange="updateProgress()">
+                    <label for="titre-4">Identifier le problème de l'utilisateur en introduction</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="titre-5" onchange="updateProgress()">
+                    <label for="titre-5">Annoncer ce que l'utilisateur va apprendre</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="titre-6" onchange="updateProgress()">
+                    <label for="titre-6">Rédiger une description de 150 caractères</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRUCTURE -->
+        <div class="section" data-section="structure">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    📝 Structure et Clarté
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/6</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="struct-1" onchange="updateProgress()">
+                    <label for="struct-1">Utiliser des sous-titres clairs et descriptifs</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="struct-2" onchange="updateProgress()">
+                    <label for="struct-2">Limiter les paragraphes à 3-4 lignes maximum</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="struct-3" onchange="updateProgress()">
+                    <label for="struct-3">Rédiger des phrases courtes (maximum 20 mots)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="struct-4" onchange="updateProgress()">
+                    <label for="struct-4">Utiliser des listes à puces et listes numérotées</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="struct-5" onchange="updateProgress()">
+                    <label for="struct-5">Mettre en gras les points clés (sans excès)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="struct-6" onchange="updateProgress()">
+                    <label for="struct-6">Créer un sommaire cliquable pour les longs articles (>1500 mots)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENU QUALITÉ -->
+        <div class="section" data-section="contenu">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    💎 Qualité du Contenu
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/8</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-1" onchange="updateProgress()">
+                    <label for="contenu-1">Vérifier l'exactitude de toutes les informations</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-2" onchange="updateProgress()">
+                    <label for="contenu-2">Inclure des chiffres et statistiques récents (moins de 2 ans)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-3" onchange="updateProgress()">
+                    <label for="contenu-3">Citer les sources importantes avec des liens</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-4" onchange="updateProgress()">
+                    <label for="contenu-4">Donner des exemples concrets et actionnables</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-5" onchange="updateProgress()">
+                    <label for="contenu-5">Partager une expertise ou expérience personnelle</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-6" onchange="updateProgress()">
+                    <label for="contenu-6">Éviter le jargon ou l'expliquer simplement</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="contenu-7" onchange="updateProgress()">
+                    <label for="contenu-7">Adopter un ton conversationnel et humain</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPTIMISATION IA -->
+        <div class="section" data-section="ia">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    🤖 Optimisation pour les moteurs de recherche et IA
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/8</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-1" onchange="updateProgress()">
+                    <label for="ia-1">Structurer l'information de façon hiérarchique (titres H1, H2, H3)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-2" onchange="updateProgress()">
+                    <label for="ia-2">S'appliquer sur les 250 premiers mots (gain informationel, riche en concepts et contexte, <a href="https://fr.wikipedia.org/wiki/Pyramide_invers%C3%A9e_(journalisme)" target="_blank">pyramide inversée</a>)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-3" onchange="updateProgress()">
+                    <label for="ia-3">Inclure des définitions claires pour les concepts clés</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-4" onchange="updateProgress()">
+                    <label for="ia-4">Utiliser (si besoin) des tableaux pour les comparaisons ou données</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-5" onchange="updateProgress()">
+                    <label for="ia-5">Ajouter (si besoin) une section FAQ avec questions-réponses</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-6" onchange="updateProgress()">
+                    <label for="ia-6">Inclure (si besoin) des étapes numérotées pour les procédures</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-7" onchange="updateProgress()">
+                    <label for="ia-7">Mentionner explicitement les dates et contexte temporel</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="ia-8" onchange="updateProgress()">
+                    <label for="ia-8">Utiliser un langage précis et factuel (éviter ambiguïté)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISUELS -->
+        <div class="section" data-section="visuels">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    🖼️ Éléments Visuels
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/4</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="visuel-1" onchange="updateProgress()">
+                    <label for="visuel-1">Ajouter une image principale en haut du contenu</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="visuel-2" onchange="updateProgress()">
+                    <label for="visuel-2">Insérer des médias pertinents (1 tous les 300 mots - vidéo, illustration, photo...)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="visuel-3" onchange="updateProgress()">
+                    <label for="visuel-3">Ajouter une description alternative pour chaque image</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="visuel-4" onchange="updateProgress()">
+                    <label for="visuel-4">Utiliser des graphiques pour présenter les données</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENGAGEMENT -->
+        <div class="section" data-section="engagement">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    🎯 Engagement et Action
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/4</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="engage-1" onchange="updateProgress()">
+                    <label for="engage-1">Placer un appel à l'action clair (au début, milieu et fin)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="engage-2" onchange="updateProgress()">
+                    <label for="engage-2">Expliquer le bénéfice de l'action proposée</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="engage-3" onchange="updateProgress()">
+                    <label for="engage-3">Ajouter des liens vers d'autres articles pertinents</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="engage-4" onchange="updateProgress()">
+                    <label for="engage-4">Inclure des témoignages ou preuves sociales si pertinent</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- RELECTURE -->
+        <div class="section" data-section="relecture">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    ✅ Vérifications Finales
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/4</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="relec-1" onchange="updateProgress()">
+                    <label for="relec-1">Relire (vraiment) le contenu</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="relec-2" onchange="updateProgress()">
+                    <label for="relec-2">Corriger toutes les fautes (utiliser un correcteur automatique)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="relec-3" onchange="updateProgress()">
+                    <label for="relec-3">Vérifier que tous les liens fonctionnent</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="relec-4" onchange="updateProgress()">
+                    <label for="relec-4">Tester l'affichage sur mobile</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROMOTION -->
+        <div class="section" data-section="promo">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <span class="collapse-icon">🔽</span>
+                    📢 Promotion et diffusion
+                </div>
+                <div class="section-progress">
+                    <span class="section-count">0/3</span>
+                </div>
+            </div>
+            
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="promo-1" onchange="updateProgress()">
+                    <label for="promo-1">Partager sur les réseaux avec un message personnalisé pour chacun</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="promo-2" onchange="updateProgress()">
+                    <label for="promo-2">Intégrer le contenu dans le plan de promotion (relais d'influence, suivi de publication) et prévoir des republications automatisées</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="promo-3" onchange="updateProgress()">
+                    <label for="promo-3">Ajouter des liens vers cet article depuis des contenus déjà existants</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">🔄 Réinitialiser</button>
+    </div>
+
+    <script>
+        const totalCheckboxes = document.querySelectorAll('input[type="checkbox"]').length;
+
+        function updateProgress() {
+            const checkedCount = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const percentage = Math.round((checkedCount / totalCheckboxes) * 100);
+            
+            document.getElementById('progress').style.width = percentage + '%';
+            document.getElementById('progress').textContent = percentage + '%';
+
+            document.querySelectorAll('.section').forEach(section => {
+                const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+                const checked = section.querySelectorAll('input[type="checkbox"]:checked').length;
+                const total = checkboxes.length;
+                
+                const counter = section.querySelector('.section-count');
+                counter.textContent = `${checked}/${total}`;
+
+                checkboxes.forEach(checkbox => {
+                    const item = checkbox.closest('.checkbox-item');
+                    if (checkbox.checked) {
+                        item.classList.add('checked');
+                    } else {
+                        item.classList.remove('checked');
+                    }
+                });
+            });
+
+            saveState();
+        }
+
+        function toggleSection(header) {
+            const section = header.closest('.section');
+            section.classList.toggle('collapsed');
+            saveCollapsedState();
+        }
+
+        function resetAll() {
+            if (confirm('Réinitialiser toute la checklist ?')) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateProgress();
+                localStorage.clear();
+            }
+        }
+
+        function saveState() {
+            const state = {};
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                state[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem('checklistSimple', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('checklistSimple');
+            if (saved) {
+                const state = JSON.parse(saved);
+                Object.keys(state).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = state[id];
+                    }
+                });
+                updateProgress();
+            }
+        }
+
+        function saveCollapsedState() {
+            const collapsed = [];
+            document.querySelectorAll('.section.collapsed').forEach(section => {
+                collapsed.push(section.getAttribute('data-section'));
+            });
+            localStorage.setItem('collapsedSimple', JSON.stringify(collapsed));
+        }
+
+        function loadCollapsedState() {
+            const saved = localStorage.getItem('collapsedSimple');
+            if (saved) {
+                const collapsed = JSON.parse(saved);
+                collapsed.forEach(sectionName => {
+                    const section = document.querySelector(`[data-section="${sectionName}"]`);
+                    if (section) {
+                        section.classList.add('collapsed');
+                    }
+                });
+            }
+        }
+
+        window.onload = function() {
+            loadState();
+            loadCollapsedState();
+        };
+
+        updateProgress();
+    </script>
+</body>
+</html>
