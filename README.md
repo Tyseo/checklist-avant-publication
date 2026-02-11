@@ -4,7 +4,7 @@ Une checklist interactive et complète pour s'assurer de ne rien oublier avant d
 
 ## 🎯 Objectif
 
-Cette checklist vous aide à optimiser vos images pour le web en couvrant 4 domaines essentiels :
+Cette checklist vous aide à optimiser vos images pour le web en couvrant les domaines essentiels :
 - ✅ **Préparation** - Vérifier les objectifs
 - ✅ **Titre et introduction** - Bien introduire le contenu
 - ✅ **Structure et clarté** - Un contenu bien organisé pour plaire aux utilisateurs
